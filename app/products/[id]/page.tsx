@@ -14,43 +14,44 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { id } = await params;
-    const product = await getProduct(id);
+    try {
+        const { id } = await params;
+        const product = await getProduct(id);
 
-    if (!product) {
+        if (!product) {
+            console.warn(`[Metadata] Product not found: ${id}`);
+            return {
+                title: "Product Not Found",
+                description: "The product you are looking for does not exist.",
+                openGraph: {
+                    title: "Product Not Found",
+                    description: "The product you are looking for does not exist.",
+                },
+            };
+        }
+
         return {
-            title: "Product Not Found | SmlSweets",
-        };
-    }
-
-    const images = product.image && product.image.length > 0
-        ? product.image
-        : ["https://placehold.co/800x600?text=No+Image"];
-
-    return {
-        title: `${product.name} | Sri Mahalakshmi Sweets`,
-        description: product.description || `Buy ${product.name} - Handcrafted authentic Indian sweets.`,
-        openGraph: {
-            title: `${product.name} | Sri Mahalakshmi Sweets`,
-            description: product.description || `Buy ${product.name} - Handcrafted authentic Indian sweets.`,
-            url: `https://smlsweets.com/products/${product.id}`,
-            siteName: 'Sri Mahalakshmi Sweets',
-            images: images.map(url => ({
-                url,
-                width: 800,
-                height: 600,
-                alt: product.name,
-            })),
-            locale: 'en_US',
-            type: 'website',
-        },
-        twitter: {
-            card: 'summary_large_image',
             title: product.name,
             description: product.description || `Buy ${product.name} - Handcrafted authentic Indian sweets.`,
-            images: [images[0]],
-        }
-    };
+            openGraph: {
+                title: product.name,
+                description: product.description || `Buy ${product.name} - Handcrafted authentic Indian sweets.`,
+                url: `/products/${product.id}`,
+                type: 'website',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: product.name,
+                description: product.description || `Buy ${product.name} - Handcrafted authentic Indian sweets.`,
+            }
+        };
+    } catch (error) {
+        console.error("[Metadata] Error generating metadata:", error);
+        return {
+            title: "Error",
+            description: "An error occurred while loading the product.",
+        };
+    }
 }
 
 // Optional: specific static params generation for better build performance if product list is small
