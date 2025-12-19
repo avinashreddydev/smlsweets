@@ -1,0 +1,2410 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Store-front API"
+  },
+  "components": {
+    "schemas": {},
+    "parameters": {}
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Health check"
+        ],
+        "responses": {
+          "200": {
+            "description": "Store-front api index",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        }
+      }
+    },
+    "/v1/products/{id}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/v1/categories": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of categories with product counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        }
+      }
+    },
+    "/v1/products/category/{category}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "category",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/v1/cart": {
+      "get": {
+        "tags": [
+          "cart"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of cart items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "422": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Failed to get all items from cart"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cart"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "minimum": 1
+                  },
+                  "variantId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "productId",
+                  "quantity",
+                  "variantId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Adding a product to cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "409": {
+            "description": "Product already in cart"
+          },
+          "422": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Failed to add item to cart"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cart"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cartId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cartId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Removed an from cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "403": {
+            "description": "Not authorized to remove this item"
+          },
+          "404": {
+            "description": "Cart item not found"
+          },
+          "422": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Server error while removing item"
+          }
+        }
+      }
+    },
+    "/v1/cart/update": {
+      "patch": {
+        "tags": [
+          "cart"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cartItemId": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "increment",
+                      "decrement",
+                      "set"
+                    ]
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "cartItemId",
+                  "action",
+                  "quantity"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cart quantity updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "Cart item not found"
+          },
+          "422": {
+            "description": "Invalid input data or insufficient stock"
+          },
+          "500": {
+            "description": "Failed to update cart quantity"
+          }
+        }
+      }
+    },
+    "/v1/wishlist": {
+      "get": {
+        "tags": [
+          "wishlist"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of wishlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to get all items from cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "wishlist"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "productId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Adding a product to wishlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Product already in wishlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to get all items from cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/wishlist/{id}": {
+      "delete": {
+        "tags": [
+          "wishlist"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Task deleted"
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "example": {
+                    "message": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid id error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to get all items from cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/order": {
+      "get": {
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to get all orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "total": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "productId": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "variantId": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "quantity": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            },
+                            "price": {
+                              "type": "number",
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            }
+                          },
+                          "required": [
+                            "productId",
+                            "variantId",
+                            "quantity",
+                            "price"
+                          ]
+                        },
+                        "minItems": 1
+                      },
+                      "shippingAddress": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "street": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "city": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "state": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "zipCode": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "country": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "billingAddress": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "street": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "city": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "state": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "zipCode": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "country": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "payment": {
+                        "type": "object",
+                        "properties": {
+                          "gateway": {
+                            "type": "string",
+                            "enum": [
+                              "RAZORPAY",
+                              "STRIPE",
+                              "PAYTM",
+                              "PHONEPE",
+                              "CASHFREE",
+                              "OTHER"
+                            ]
+                          },
+                          "method": {
+                            "type": "string",
+                            "enum": [
+                              "CARD",
+                              "UPI",
+                              "NETBANKING",
+                              "WALLET",
+                              "EMI",
+                              "COD",
+                              "OTHER"
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "PENDING",
+                              "INITIATED",
+                              "AUTHORIZED",
+                              "CAPTURED",
+                              "FAILED",
+                              "REFUNDED",
+                              "PARTIALLY_REFUNDED",
+                              "CANCELLED",
+                              "CHARGEBACK"
+                            ],
+                            "default": "PENDING"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": true
+                          },
+                          "currency": {
+                            "type": "string",
+                            "default": "INR"
+                          },
+                          "gatewayOrderId": {
+                            "type": "string"
+                          },
+                          "gatewayPaymentId": {
+                            "type": "string"
+                          },
+                          "gatewaySignature": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "gateway",
+                          "method"
+                        ]
+                      },
+                      "customerEmail": {
+                        "type": "string",
+                        "format": "email"
+                      },
+                      "customerName": {
+                        "type": "string"
+                      },
+                      "customerPhone": {
+                        "type": "string"
+                      },
+                      "isAuthenticated": {
+                        "type": "boolean",
+                        "enum": [
+                          true
+                        ]
+                      },
+                      "fromCart": {
+                        "type": "boolean",
+                        "default": true
+                      }
+                    },
+                    "required": [
+                      "total",
+                      "items",
+                      "payment"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "total": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "productId": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "variantId": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "quantity": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            },
+                            "price": {
+                              "type": "number",
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            }
+                          },
+                          "required": [
+                            "productId",
+                            "variantId",
+                            "quantity",
+                            "price"
+                          ]
+                        },
+                        "minItems": 1
+                      },
+                      "shippingAddress": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "street": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "city": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "state": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "zipCode": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "country": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "billingAddress": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "street": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "city": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "state": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "zipCode": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "country": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "payment": {
+                        "type": "object",
+                        "properties": {
+                          "gateway": {
+                            "type": "string",
+                            "enum": [
+                              "RAZORPAY",
+                              "STRIPE",
+                              "PAYTM",
+                              "PHONEPE",
+                              "CASHFREE",
+                              "OTHER"
+                            ]
+                          },
+                          "method": {
+                            "type": "string",
+                            "enum": [
+                              "CARD",
+                              "UPI",
+                              "NETBANKING",
+                              "WALLET",
+                              "EMI",
+                              "COD",
+                              "OTHER"
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "PENDING",
+                              "INITIATED",
+                              "AUTHORIZED",
+                              "CAPTURED",
+                              "FAILED",
+                              "REFUNDED",
+                              "PARTIALLY_REFUNDED",
+                              "CANCELLED",
+                              "CHARGEBACK"
+                            ],
+                            "default": "PENDING"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": true
+                          },
+                          "currency": {
+                            "type": "string",
+                            "default": "INR"
+                          },
+                          "gatewayOrderId": {
+                            "type": "string"
+                          },
+                          "gatewayPaymentId": {
+                            "type": "string"
+                          },
+                          "gatewaySignature": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "gateway",
+                          "method"
+                        ]
+                      },
+                      "customerEmail": {
+                        "type": "string",
+                        "format": "email"
+                      },
+                      "customerName": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "customerPhone": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "isAuthenticated": {
+                        "type": "boolean",
+                        "enum": [
+                          false
+                        ]
+                      },
+                      "fromCart": {
+                        "type": "boolean",
+                        "default": true
+                      }
+                    },
+                    "required": [
+                      "total",
+                      "items",
+                      "payment",
+                      "customerEmail",
+                      "customerName",
+                      "customerPhone"
+                    ]
+                  }
+                ]
+              },
+              "examples": {
+                "authenticatedUser": {
+                  "summary": "Authenticated user order",
+                  "description": "Order from logged-in user (only address required)",
+                  "value": {
+                    "total": 299.99,
+                    "shippingAddress": {
+                      "street": "123 Main St",
+                      "city": "Anytown",
+                      "state": "CA",
+                      "zipCode": "12345",
+                      "country": "USA"
+                    },
+                    "items": [
+                      {
+                        "productId": "prod_123",
+                        "quantity": 2,
+                        "price": 149.99,
+                        "variantId": "var_123"
+                      }
+                    ]
+                  }
+                },
+                "guestUser": {
+                  "summary": "Guest checkout order",
+                  "description": "Order from anonymous user (customer info required)",
+                  "value": {
+                    "total": 299.99,
+                    "customerEmail": "guest@example.com",
+                    "customerName": "John Doe",
+                    "customerPhone": "+1234567890",
+                    "isGuestCheckout": true,
+                    "shippingAddress": {
+                      "street": "123 Main St",
+                      "city": "Anytown",
+                      "state": "CA",
+                      "zipCode": "12345",
+                      "country": "USA"
+                    },
+                    "items": [
+                      {
+                        "productId": "prod_123",
+                        "quantity": 2,
+                        "price": 149.99
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data - missing required fields for guest checkout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store or products not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to create order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/order/:orderId": {
+      "get": {
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to retrieve order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "PENDING",
+                      "INITIATED",
+                      "AUTHORIZED",
+                      "CAPTURED",
+                      "FAILED",
+                      "REFUNDED",
+                      "PARTIALLY_REFUNDED",
+                      "CANCELLED",
+                      "CHARGEBACK"
+                    ]
+                  },
+                  "shippingAddress": {
+                    "type": "object",
+                    "properties": {
+                      "street": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "zipCode": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "payment": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "PENDING",
+                          "INITIATED",
+                          "AUTHORIZED",
+                          "CAPTURED",
+                          "FAILED",
+                          "REFUNDED",
+                          "PARTIALLY_REFUNDED",
+                          "CANCELLED",
+                          "CHARGEBACK"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "status"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to update order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/signin": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully registered the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "409": {
+            "description": "Product already in cart"
+          },
+          "422": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Failed to add item to cart"
+          }
+        }
+      }
+    },
+    "/v1/signup": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully registered the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "409": {
+            "description": "User already exist"
+          },
+          "500": {
+            "description": "Failed to register user"
+          }
+        }
+      }
+    },
+    "/v1/auth/merge-guest-data": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "guestToken": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "guestToken"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guest data merged successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid guest token"
+          },
+          "401": {
+            "description": "User must be authenticated"
+          },
+          "500": {
+            "description": "Failed to merge guest data"
+          }
+        }
+      }
+    },
+    "/v1/auth/phone-number/send-otp": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "minLength": 10
+                  }
+                },
+                "required": [
+                  "phoneNumber"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid phone number"
+          },
+          "500": {
+            "description": "Failed to send OTP"
+          }
+        }
+      }
+    },
+    "/v1/auth/phone-number/verify": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "minLength": 10
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 6
+                  },
+                  "disableSession": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "updatePhoneNumber": {
+                    "type": "boolean",
+                    "default": true
+                  }
+                },
+                "required": [
+                  "phoneNumber",
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Phone verified successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid code or phone number"
+          },
+          "401": {
+            "description": "Code expired or incorrect"
+          },
+          "500": {
+            "description": "Failed to verify OTP"
+          }
+        }
+      }
+    },
+    "/v1/banners": {
+      "get": {
+        "tags": [
+          "banners"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of banners",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "500": {
+            "description": "Failed to get banners"
+          }
+        }
+      }
+    },
+    "/v1/search/products": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "category",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "required": false,
+            "name": "min_price",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "required": false,
+            "name": "max_price",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ],
+              "default": "ACTIVE"
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "name": "per_page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "_score",
+                "price:asc",
+                "price:desc",
+                "createdAt:desc",
+                "createdAt:asc"
+              ],
+              "default": "_score"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results for products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search parameters"
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "500": {
+            "description": "Search service error"
+          }
+        }
+      }
+    },
+    "/v1/search/categories/{category}": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "required": false,
+            "name": "min_price",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "required": false,
+            "name": "max_price",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "name": "per_page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "_score",
+                "price:asc",
+                "price:desc",
+                "createdAt:desc",
+                "createdAt:asc"
+              ],
+              "default": "_score"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid category or parameters"
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "500": {
+            "description": "Category search error"
+          }
+        }
+      }
+    },
+    "/v1/search/autocomplete": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "default": 5
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Autocomplete suggestions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid autocomplete parameters"
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "500": {
+            "description": "Autocomplete service error"
+          }
+        }
+      }
+    },
+    "/v1/feedback": {
+      "get": {
+        "tags": [
+          "feedback"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of customer feedback",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "403": {
+            "description": "Only registered customers can view feedback"
+          },
+          "500": {
+            "description": "Failed to get feedback"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "feedback"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "comment": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "rating": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5
+                  }
+                },
+                "required": [
+                  "productId",
+                  "comment",
+                  "rating"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feedback created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "403": {
+            "description": "Only registered customers can create feedback"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "409": {
+            "description": "Feedback already exists for this product"
+          },
+          "422": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Failed to create feedback"
+          }
+        }
+      }
+    },
+    "/v1/feedback/{id}": {
+      "put": {
+        "tags": [
+          "feedback"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "rating": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5
+                  }
+                },
+                "required": [
+                  "comment",
+                  "rating"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feedback updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "403": {
+            "description": "Only registered customers can update feedback"
+          },
+          "404": {
+            "description": "Feedback not found"
+          },
+          "422": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Failed to update feedback"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "feedback"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feedback deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "403": {
+            "description": "Only registered customers can delete feedback"
+          },
+          "404": {
+            "description": "Feedback not found"
+          },
+          "500": {
+            "description": "Failed to delete feedback"
+          }
+        }
+      }
+    },
+    "/v1/feedback/product/{productId}": {
+      "get": {
+        "tags": [
+          "feedback"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "productId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "API key for authentication"
+            },
+            "required": true,
+            "name": "x-api-key",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product feedback list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Failed to get product feedback"
+          }
+        }
+      }
+    }
+  }
+}
