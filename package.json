@@ -12,7 +12,7 @@
     "@tanstack/react-query": "^5.90.12",
     "embla-carousel-react": "^8.6.0",
     "motion": "^12.23.26",
-    "next": "15.3.6",
+    "next": "15.3.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "zod": "^4.2.1",
