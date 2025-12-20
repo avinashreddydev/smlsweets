@@ -12,26 +12,30 @@ export default function Footer() {
                         We believe in the purity of ingredients. No preservatives. No shortcuts. Just the finest ghee, saffron, and nuts, crafted with techniques passed down through generations.
                     </p>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm uppercase tracking-widest text-gray-500">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-sm uppercase tracking-widest text-gray-500">
                     <div>
                         <span className="block text-white mb-2">Location</span>
                         <a
                             href="https://maps.app.goo.gl/Ayk32poaiPL1Ldau8"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-white transition-colors"
+                            className="hover:text-white transition-colors block"
                         >
                             Naidupet, Guntur,<br />
                             Andhra Pradesh 522007,<br />
                             India
                         </a>
                     </div>
-                    <div>
+                    <div className="sm:col-span-2 lg:col-span-1">
                         <span className="block text-white mb-2">Contact</span>
-                        <a href="tel:+919948819097" className="block hover:text-white transition-colors">+91 99488 19097</a>
-                        <a href="mailto:hello@smlsweets.com" className="block hover:text-white transition-colors">hello@smlsweets.com</a>
+                        <a href="tel:+919948819097" className="block hover:text-white transition-colors mb-1">
+                            +91 99488 19097
+                        </a>
+                        <a href="mailto:hello@smlsweets.com" className="block hover:text-white transition-colors break-all">
+                            hello@smlsweets.com
+                        </a>
                     </div>
-                    <div>
+                    <div className="sm:col-span-2 lg:col-span-1">
                         <span className="block text-white mb-2">Legal</span>
                         <ul className="space-y-1">
                             <li><a href="/T&C" className="hover:text-white transition-colors">Terms & Conditions</a></li>
@@ -43,6 +47,6 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-        </footer >
+        </footer>
     )
 }

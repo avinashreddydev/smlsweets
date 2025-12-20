@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import ProductGallery from "@/components/ProductGallery";
 import ProductActions from "@/components/ProductActions";
+import RelatedProducts from "@/components/RelatedProducts";
 
 export const revalidate = 60;
 
@@ -101,8 +102,6 @@ export default async function ProductPage({ params }: Props) {
                             {product.name}
                         </h1>
 
-
-
                         <div className="prose prose-lg text-gray-600 mb-12 leading-relaxed font-sans">
                             <p>{product.description || "A timeless classic, handcrafted with perfection."}</p>
                         </div>
@@ -112,6 +111,9 @@ export default async function ProductPage({ params }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* Related Products Section */}
+            <RelatedProducts currentProductId={product.id} />
         </div>
     );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCartStore } from "@/hooks/useCartStore";
 import { createOrder } from "@/lib/storekit";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -11,6 +12,7 @@ export default function CheckoutPage() {
     const clearCart = useCartStore((state) => state.clearCart);
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(false);
 
     // Calculate total on the fly
     const cartTotal = items.reduce((total, item) => {
@@ -221,10 +223,44 @@ export default function CheckoutPage() {
                             </div>
                         </div>
 
+                        <div className="pt-6">
+                            <label className="flex items-start gap-4 cursor-pointer group">
+                                <div className="relative flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        className="peer sr-only"
+                                        checked={termsAccepted}
+                                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                                    />
+                                    <div className="w-6 h-6 border-2 border-black bg-transparent peer-checked:bg-black transition-colors" />
+                                    <svg
+                                        className="absolute left-1 top-1 w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth="3"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div className="text-xs text-gray-500 font-medium uppercase tracking-wide leading-relaxed pt-0.5">
+                                    I agree to the{" "}
+                                    <Link href="/T&C" target="_blank" className="underline underline-offset-2 text-black hover:text-gray-600">
+                                        Terms & Conditions
+                                    </Link>{" "}
+                                    and{" "}
+                                    <Link href="/privacy_policy" target="_blank" className="underline underline-offset-2 text-black hover:text-gray-600">
+                                        Privacy Policy
+                                    </Link>
+                                    .
+                                </div>
+                            </label>
+                        </div>
+
                         <button
                             type="submit"
-                            disabled={isSubmitting}
-                            className="w-full bg-black text-white py-5 mt-12 text-sm font-bold uppercase tracking-[0.2em] hover:bg-yellow-400 hover:text-black transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isSubmitting || !termsAccepted}
+                            className="w-full bg-black text-white py-5 mt-8 text-sm font-bold uppercase tracking-[0.2em] hover:bg-yellow-400 hover:text-black transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black disabled:hover:text-white"
                         >
                             {isSubmitting ? "Processing..." : `Pay ₹${(cartTotal).toFixed(0)}`}
                         </button>
@@ -234,41 +270,50 @@ export default function CheckoutPage() {
                 {/* Order Summary - Swiss Layout */}
                 <div className="lg:col-span-5 order-1 lg:order-2 mb-12 lg:mb-0">
                     <div className="bg-white border border-black p-8 lg:p-10 sticky top-24">
-                        <div className="flex justify-between items-end border-b border-black pb-6 mb-8">
-                            <h2 className="text-xl font-bold uppercase tracking-widest leading-none">
-                                Your<br />Order
-                            </h2>
-                            <span className="font-mono text-xs">{items.length} ITEMS</span>
+                        {/* Grid Header */}
+                        <div className="grid grid-cols-[1fr_80px_80px] gap-4 border-b border-black pb-4 mb-6 text-xs font-bold uppercase tracking-widest text-black">
+                            <div>Item</div>
+                            <div className="text-center">Qty</div>
+                            <div className="text-right">Price</div>
                         </div>
 
-                        <div className="space-y-8 mb-8 custom-scrollbar max-h-[500px] overflow-y-auto">
+                        <div className="space-y-6 mb-8 custom-scrollbar max-h-[500px] overflow-y-auto">
                             {items.map(({ product, quantity, variantId }) => {
                                 const variant = product.variants?.find(v => v.id === variantId) || product.variants?.[0];
                                 const price = variant?.price || 0;
                                 const imageUrl = product.image?.[0] || "https://placehold.co/100x100?text=No+Image";
 
                                 return (
-                                    <div key={`${product.id}-${variantId}`} className="group flex gap-6 items-start">
-                                        <div className="relative w-20 h-24 bg-gray-100 shrink-0 border border-black/10 overflow-hidden">
-                                            <Image
-                                                src={imageUrl}
-                                                alt={product.name}
-                                                fill
-                                                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-0 pt-1">
-                                            <h4 className="font-bold uppercase text-sm tracking-wider text-black truncate mb-1">{product.name}</h4>
-                                            {variant && (
-                                                <p className="text-xs font-mono text-gray-500 uppercase tracking-tight mb-2">
-                                                    {variant.quantity} {variant.unit}
-                                                </p>
-                                            )}
-                                            <div className="text-xs font-bold border border-black inline-block px-2 py-0.5">
-                                                QTY: {quantity}
+                                    <div key={`${product.id}-${variantId}`} className="grid grid-cols-[1fr_80px_80px] gap-4 items-center group">
+                                        {/* Product Info Column */}
+                                        <div className="flex gap-4 items-center min-w-0">
+                                            <div className="relative w-12 h-16 bg-gray-100 shrink-0 border border-black/10 overflow-hidden hidden sm:block">
+                                                <Image
+                                                    src={imageUrl}
+                                                    alt={product.name}
+                                                    fill
+                                                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                                                />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h4 className="font-bold uppercase text-xs tracking-wider text-black truncate">{product.name}</h4>
+                                                {variant && (
+                                                    <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tight">
+                                                        {variant.quantity} {variant.unit}
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
-                                        <div className="font-mono text-sm pt-1">
+
+                                        {/* Quantity Column */}
+                                        <div className="flex justify-center">
+                                            <div className="text-xs font-bold border border-black inline-flex items-center justify-center w-8 h-8 bg-white">
+                                                {quantity}
+                                            </div>
+                                        </div>
+
+                                        {/* Price Column */}
+                                        <div className="text-right font-mono text-sm">
                                             ₹{(price * quantity).toFixed(0)}
                                         </div>
                                     </div>

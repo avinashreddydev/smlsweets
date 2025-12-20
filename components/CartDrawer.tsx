@@ -1,13 +1,40 @@
 "use client";
 
 import { useCartStore } from "@/hooks/useCartStore";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect } from "react";
 
+
+
+// {/* Mobile Navigation */}
+//                         {/* <div className="md:hidden flex flex-col p-6 border-b border-black/10 space-y-4">
+//                             <Link href="/" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
+//                                 Home
+//                             </Link>
+//                             <Link href="/about" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
+//                                 About
+//                             </Link>
+//                             {user ? (
+//                                 <Link href="/profile" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
+//                                     Profile
+//                                 </Link>
+//                             ) : (
+//                                 <button
+//                                     onClick={() => { closeCart(); openAuth(); }}
+//                                     className="text-left text-3xl font-black uppercase tracking-tighter text-gray-400 hover:text-black transition-colors"
+//                                 >
+//                                     Login
+//                                 </button>
+//                             )}
+//                             {/* Add more links here if needed */}
+//                         </div> */}
+
 export default function CartDrawer() {
     const { items, isCartOpen, closeCart, removeItem, updateQuantity } = useCartStore();
+    const { user, openAuth } = useAuthStore();
 
     // Prevent body scroll when cart is open
     useEffect(() => {
@@ -53,7 +80,7 @@ export default function CartDrawer() {
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-6 border-b border-black/10">
-                            <h2 className="text-2xl font-black uppercase tracking-tight text-black">Menu</h2>
+                            <h2 className="text-2xl font-black uppercase tracking-tight text-black">Cart</h2>
                             <button
                                 onClick={closeCart}
                                 className="p-2 hover:bg-black/5 rounded-full transition-colors text-black"
@@ -64,16 +91,7 @@ export default function CartDrawer() {
                             </button>
                         </div>
 
-                        {/* Mobile Navigation */}
-                        <div className="md:hidden flex flex-col p-6 border-b border-black/10 space-y-4">
-                            <Link href="/" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
-                                Home
-                            </Link>
-                            <Link href="/about" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
-                                About
-                            </Link>
-                            {/* Add more links here if needed */}
-                        </div>
+
 
                         {/* Cart Header if items exist, or just 'Cart' label */}
                         <div className="px-6 pt-6 pb-2">

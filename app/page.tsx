@@ -39,7 +39,7 @@ export default async function Home() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-8 md:gap-y-16">
                 {categoryProducts.map((product) => (
                   <Link href={`/products/${product.id}`} key={product.id} className="group block">
-                    <div className="relative aspect-[3/4] bg-gray-100 mb-6 overflow-hidden">
+                    <div className="relative aspect-[1/1] bg-gray-100 mb-6 overflow-hidden">
                       <Image
                         src={product.image?.[0] || "https://placehold.co/600x800?text=No+Image"}
                         alt={product.name}

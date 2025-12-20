@@ -43,7 +43,7 @@ export default function ProductGallery({ images, productName, hotSale }: Product
 
     return (
         <div className="h-full flex flex-col">
-            <div className="relative flex-1 bg-gray-100 overflow-hidden w-full aspect-[4/5] lg:aspect-auto group/gallery">
+            <div className="relative flex-1 bg-gray-100 overflow-hidden w-full aspect-[1/1] lg:aspect-auto group/gallery">
                 {/* Embla Viewport */}
                 <div className="absolute inset-0" ref={emblaRef}>
                     <div className="flex h-full">
