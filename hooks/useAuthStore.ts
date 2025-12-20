@@ -39,6 +39,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     login: (phoneNumber) => set({
         user: { phoneNumber, name: 'Guest User' },
         isOpen: false,
+        step: 'PHONE',
         phoneNumber: ''
     }),
 

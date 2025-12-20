@@ -1,7 +1,8 @@
 "use client"
 
-import { useId } from "react"
+import { useState, useId } from "react"
 import { Phone, Lock } from "lucide-react"
+import { z } from "zod"
 
 import {
     FamilyDrawerAnimatedContent,
@@ -19,49 +20,66 @@ import {
 } from "@/components/ui/family-drawer"
 import { useAuthStore } from "@/hooks/useAuthStore"
 
+const phoneSchema = z.string().length(10, "Phone number must be exactly 10 digits")
+
 function PhoneNumberInputView() {
     const { setView } = useFamilyDrawer()
     const { phoneNumber, setPhoneNumber, setStep } = useAuthStore()
     const inputId = useId()
+    const [error, setError] = useState<string | null>(null)
 
     const handleGetOTP = () => {
-        if (phoneNumber.length === 10) {
+        const result = phoneSchema.safeParse(phoneNumber)
+
+        if (result.success) {
+            setError(null)
             setStep('OTP')
             setView("otp")
+        } else {
+            setError(result.error.issues[0].message)
         }
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))
+        if (error) setError(null)
     }
 
     return (
         <div>
-            <div className="px-2">
-                <FamilyDrawerHeader
-                    icon={<Phone className="size-8" />}
-                    title="Phone Number"
-                    description="Enter your phone number to login."
-                />
-            </div>
 
-            <div className="mt-6 space-y-4 border-t border-border pt-6">
+
+            <div className="mt-6 space-y-4  ">
                 <div>
-                    <label
-                        htmlFor={inputId}
-                        className="text-[15px] font-semibold text-foreground md:font-medium"
-                    >
-                        Phone Number
-                    </label>
-                    <div className="mt-2 flex items-center gap-2">
-                        <div className="flex items-center gap-1 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm">
-                            <span>🇮🇳</span>
-                            <span>+91</span>
+                    {/* <FamilyDrawerHeader
+                        title="Phone Number"
+                        description="Enter your phone number to login."
+                        icon={<Phone className="size-4 text-black" />}
+                        className="m-0 space-y-1  text-sm "
+                    /> */}
+
+                    <h2 className="text-2xl font-bold">Enter Phone Number</h2>
+                </div>
+
+                <div className="mt-2 space-y-1">
+                    <div>
+                        <div className="">
+                            <input
+                                id={inputId}
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="Phone Number"
+                                value={phoneNumber}
+                                onChange={handleChange}
+                                maxLength={10}
+                                minLength={10}
+                                className={`w-full px-3 text-3xl font-mono rounded-lg border py-3 bg-background focus:outline-none focus:ring-2 focus:ring-black/5 ${error ? "border-red-500" : "border-border"
+                                    }`}
+                            />
                         </div>
-                        <input
-                            id={inputId}
-                            type="tel"
-                            placeholder="98765 43210"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                            className="flex-1 rounded-lg border border-border px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-black/5"
-                        />
+                        {error && (
+                            <p className="mt-2 text-sm text-red-500 font-medium">{error}</p>
+                        )}
                     </div>
                 </div>
             </div>
@@ -80,7 +98,7 @@ function PhoneNumberInputView() {
 
 function OTPView() {
     const { setView } = useFamilyDrawer()
-    const { login, phoneNumber, closeAuth } = useAuthStore()
+    const { login, phoneNumber, setStep } = useAuthStore()
     const otpId = useId()
 
     const handleVerify = () => {
@@ -91,20 +109,15 @@ function OTPView() {
 
     return (
         <div>
-            <div className="px-2">
-                <FamilyDrawerHeader
-                    icon={<Lock className="size-8" />}
-                    title="OTP Verification"
-                    description={`Enter 4-digit code sent to +91 ${phoneNumber}`}
-                />
-            </div>
-            <div className="mt-6 space-y-4 border-t border-border pt-6">
+            <div className="mt-2 space-y-4 ">
                 <div>
                     <label
                         htmlFor={otpId}
-                        className="text-[15px] font-semibold text-foreground md:font-medium"
+                        className="text-xl font-semibold text-foreground md:font-medium"
                     >
-                        Enter OTP
+                        Enter 4-digit code sent to
+                        <br />
+                        {`+91 ${phoneNumber}`}
                     </label>
                     <div className="mt-2">
                         <input
@@ -113,14 +126,17 @@ function OTPView() {
                             inputMode="numeric"
                             placeholder="1234"
                             maxLength={4}
-                            className="w-full text-center text-2xl tracking-[1em] font-mono rounded-lg border border-border px-3 py-4 bg-background focus:outline-none focus:ring-2 focus:ring-black/5"
+                            className="w-full text-center text-3xl tracking-[1em] font-mono rounded-lg border border-border py-3 bg-background focus:outline-none focus:ring-2 focus:ring-black/5"
                         />
                     </div>
                 </div>
             </div>
             <div className="mt-7 flex gap-4">
                 <FamilyDrawerSecondaryButton
-                    onClick={() => setView("default")}
+                    onClick={() => {
+                        setStep("PHONE")
+                        setView("default")
+                    }}
                     className="flex-1 bg-gray-100 text-gray-900 hover:bg-gray-200"
                 >
                     Back
