@@ -58,7 +58,46 @@ export async function getProduct(id: string): Promise<StorekitProduct | null> {
     }
 }
 
-export async function createOrder(orderData: any) {
+export interface PostOrderRequest {
+    total: number;
+    items: {
+        productId: string;
+        variantId: string;
+        quantity: number;
+        price: number;
+    }[];
+    shippingAddress: {
+        street: string;
+        city: string;
+        state: string;
+        zipCode: string;
+        country: string;
+    } | string;
+    billingAddress?: {
+        street: string;
+        city: string;
+        state: string;
+        zipCode: string;
+        country: string;
+    } | string;
+    payment: {
+        gateway: "RAZORPAY" | "STRIPE" | "PAYTM" | "PHONEPE" | "CASHFREE" | "OTHER";
+        method: "CARD" | "UPI" | "NETBANKING" | "WALLET" | "EMI" | "COD" | "OTHER";
+        status?: "PENDING" | "INITIATED" | "AUTHORIZED" | "CAPTURED" | "FAILED" | "REFUNDED" | "PARTIALLY_REFUNDED" | "CANCELLED" | "CHARGEBACK";
+        amount?: number;
+        currency?: string;
+        gatewayOrderId?: string;
+        gatewayPaymentId?: string;
+        gatewaySignature?: string;
+    };
+    customerEmail?: string;
+    customerName?: string;
+    customerPhone?: string;
+    isAuthenticated?: boolean;
+    fromCart?: boolean;
+}
+
+export async function postOrder(orderData: PostOrderRequest) {
     console.log("[StoreKit] Creating order...", { email: orderData.customerEmail, itemCount: orderData.items.length });
     try {
         const res = await fetch(`${API_URL}/v1/order`, {
@@ -74,8 +113,8 @@ export async function createOrder(orderData: any) {
         }
 
         const data = await res.json();
-        console.log("[StoreKit] Order created successfully:", data.id);
-        return data;
+        console.log("[StoreKit] Order created successfully:", data.data?.id || "Unknown ID");
+        return data.data; // Returning the inner data object
     } catch (error) {
         console.error("[StoreKit] Error creating order:", error);
         throw error;

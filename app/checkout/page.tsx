@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useCartStore } from "@/hooks/useCartStore";
-import { createOrder } from "@/lib/storekit";
+import { postOrder } from "@/lib/storekit";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -50,34 +50,7 @@ export default function CheckoutPage() {
         e.preventDefault();
         setIsSubmitting(true);
         setError(null);
-
-        const orderPayload = {
-            isGuestCheckout: true,
-            customerEmail: formData.email,
-            customerName: formData.name,
-            shippingAddress: formData.address,
-            billingAddress: formData.address, // Simplifying for guest
-            items: items.map((item) => {
-                const variant = item.product.variants?.find(v => v.id === item.variantId) || item.product.variants?.[0];
-                return {
-                    productId: item.product.id,
-                    quantity: item.quantity,
-                    price: variant?.price || 0,
-                }
-            }),
-            currency: "MXN",
-        };
-
-        try {
-            await createOrder(orderPayload);
-            setSuccess(true);
-            clearCart();
-        } catch (err: any) {
-            console.error(err);
-            setError(err.message || "Something went wrong. Please try again.");
-        } finally {
-            setIsSubmitting(false);
-        }
+        console.log(formData);
     };
 
     if (success) {

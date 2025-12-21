@@ -9,32 +9,10 @@ import { useEffect } from "react";
 
 
 
-// {/* Mobile Navigation */}
-//                         {/* <div className="md:hidden flex flex-col p-6 border-b border-black/10 space-y-4">
-//                             <Link href="/" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
-//                                 Home
-//                             </Link>
-//                             <Link href="/about" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
-//                                 About
-//                             </Link>
-//                             {user ? (
-//                                 <Link href="/profile" onClick={closeCart} className="text-3xl font-black uppercase tracking-tighter text-black hover:text-gray-600 transition-colors">
-//                                     Profile
-//                                 </Link>
-//                             ) : (
-//                                 <button
-//                                     onClick={() => { closeCart(); openAuth(); }}
-//                                     className="text-left text-3xl font-black uppercase tracking-tighter text-gray-400 hover:text-black transition-colors"
-//                                 >
-//                                     Login
-//                                 </button>
-//                             )}
-//                             {/* Add more links here if needed */}
-//                         </div> */}
 
 export default function CartDrawer() {
     const { items, isCartOpen, closeCart, removeItem, updateQuantity } = useCartStore();
-    const { user, openAuth } = useAuthStore();
+    const { user } = useAuthStore();
 
     // Prevent body scroll when cart is open
     useEffect(() => {

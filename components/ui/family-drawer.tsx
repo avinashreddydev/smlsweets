@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useMemo,
-  useEffect,
   useRef,
   useState,
   type ReactNode,
@@ -80,17 +79,6 @@ function FamilyDrawerRoot({
   const [view, setView] = useState(defaultView)
   const [elementRef, bounds] = useMeasure()
   const previousHeightRef = useRef<number>(0)
-
-  // Sync view with defaultView when it changes
-  // This allows external control to reset the view
-  // Sync view with defaultView when it changes
-  // This allows external control to reset the view
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (defaultView) {
-      setView(defaultView)
-    }
-  }, [defaultView])
 
   const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen
   const setIsOpen = onOpenChange || setInternalOpen

@@ -1,12 +1,24 @@
 "use client"
 
-import { useState, useId } from "react"
+import { useCallback, useEffect, useId, useRef, useState } from "react"
+import {
+    AlertTriangle,
+    ArrowLeft,
+    ArrowRight,
+    CheckCircle,
+    File,
+    Image,
+    Trash,
+    Upload,
+    XCircle,
+} from "lucide-react"
+
 import { Phone, Lock } from "lucide-react"
 import { z } from "zod"
-
 import {
     FamilyDrawerAnimatedContent,
     FamilyDrawerAnimatedWrapper,
+    FamilyDrawerButton,
     FamilyDrawerClose,
     FamilyDrawerContent,
     FamilyDrawerHeader,
@@ -14,26 +26,31 @@ import {
     FamilyDrawerPortal,
     FamilyDrawerRoot,
     FamilyDrawerSecondaryButton,
+    FamilyDrawerTrigger,
     FamilyDrawerViewContent,
     useFamilyDrawer,
     type ViewsRegistry,
-} from "@/components/ui/family-drawer"
-import { useAuthStore } from "@/hooks/useAuthStore"
+} from "@/components/ui/family-drawer";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { Drawer } from "vaul";
+
+// ============================================================================
+// Example 2: Custom Views via Props
+// ============================================================================
 
 const phoneSchema = z.string().length(10, "Phone number must be exactly 10 digits")
 
-function PhoneNumberInputView() {
+function CustomDefaultView() {
     const { setView } = useFamilyDrawer()
-    const { phoneNumber, setPhoneNumber, setStep } = useAuthStore()
-    const inputId = useId()
+    const phoneId = useId()
     const [error, setError] = useState<string | null>(null)
+    const { phoneNumber, setPhoneNumber } = useAuthStore()
 
     const handleGetOTP = () => {
         const result = phoneSchema.safeParse(phoneNumber)
-
+        console.log(result)
         if (result.success) {
             setError(null)
-            setStep('OTP')
             setView("otp")
         } else {
             setError(result.error.issues[0].message)
@@ -47,43 +64,32 @@ function PhoneNumberInputView() {
 
     return (
         <div>
-
-
-            <div className="mt-6 space-y-4  ">
-                <div>
-                    {/* <FamilyDrawerHeader
-                        title="Phone Number"
-                        description="Enter your phone number to login."
-                        icon={<Phone className="size-4 text-black" />}
-                        className="m-0 space-y-1  text-sm "
-                    /> */}
-
-                    <h2 className="text-2xl font-bold">Enter Phone Number</h2>
-                </div>
-
-                <div className="mt-2 space-y-1">
+            <div className="px-2 pl-2">
+                <div className="mt-4 space-y-4 pt-2">
                     <div>
-                        <div className="">
-                            <input
-                                id={inputId}
-                                type="text"
-                                inputMode="numeric"
-                                placeholder="Phone Number"
-                                value={phoneNumber}
-                                onChange={handleChange}
-                                maxLength={10}
-                                minLength={10}
-                                className={`w-full px-3 text-3xl font-mono rounded-lg border py-3 bg-background focus:outline-none focus:ring-2 focus:ring-black/5 ${error ? "border-red-500" : "border-border"
-                                    }`}
-                            />
-                        </div>
+                        <label
+                            htmlFor={phoneId}
+                            className="text-[15px] font-semibold text-foreground md:font-medium"
+                        >
+                            Enter your phone number
+                        </label>
+                        <input
+                            id={phoneId}
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Phone Number"
+                            maxLength={10}
+                            minLength={10}
+                            onChange={handleChange}
+                            value={phoneNumber}
+                            className={`mt-4 w-full text-3xl font-mono rounded-lg border px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-black/5 ${error ? "border-red-500" : "border-border"}`}
+                        />
                         {error && (
                             <p className="mt-2 text-sm text-red-500 font-medium">{error}</p>
                         )}
                     </div>
                 </div>
             </div>
-
             <div className="mt-7">
                 <FamilyDrawerSecondaryButton
                     onClick={handleGetOTP}
@@ -98,7 +104,7 @@ function PhoneNumberInputView() {
 
 function OTPView() {
     const { setView } = useFamilyDrawer()
-    const { login, phoneNumber, setStep } = useAuthStore()
+    const { login, phoneNumber } = useAuthStore()
     const otpId = useId()
 
     const handleVerify = () => {
@@ -109,72 +115,63 @@ function OTPView() {
 
     return (
         <div>
-            <div className="mt-2 space-y-4 ">
-                <div>
-                    <label
-                        htmlFor={otpId}
-                        className="text-xl font-semibold text-foreground md:font-medium"
-                    >
-                        Enter 4-digit code sent to
-                        <br />
-                        {`+91 ${phoneNumber}`}
-                    </label>
-                    <div className="mt-2">
-                        <input
-                            id={otpId}
-                            type="text"
-                            inputMode="numeric"
-                            placeholder="1234"
-                            maxLength={4}
-                            className="w-full text-center text-3xl tracking-[1em] font-mono rounded-lg border border-border py-3 bg-background focus:outline-none focus:ring-2 focus:ring-black/5"
-                        />
+            <div className="px-2">
+                <div className="mt-0 space-y-4 pt-2">
+                    <div>
+                        <label
+                            htmlFor={otpId}
+                            className="text-normal font-semibold text-foreground md:font-medium"
+                        >
+                            Enter 4-digit code sent to
+                            <br />
+                            {`+91 ${phoneNumber}`}
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                id={otpId}
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="1234"
+                                maxLength={4}
+                                className="w-full text-center text-3xl tracking-[1em] font-mono rounded-lg border border-border py-3 bg-background focus:outline-none focus:ring-2 focus:ring-black/5"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="mt-7 flex gap-4">
-                <FamilyDrawerSecondaryButton
-                    onClick={() => {
-                        setStep("PHONE")
-                        setView("default")
-                    }}
-                    className="flex-1 bg-gray-100 text-gray-900 hover:bg-gray-200"
-                >
-                    Back
-                </FamilyDrawerSecondaryButton>
-                <FamilyDrawerSecondaryButton
-                    onClick={handleVerify}
-                    className="flex-1 bg-black text-white hover:bg-black/90"
-                >
-                    Verify
-                </FamilyDrawerSecondaryButton>
+                <div className="mt-7 flex gap-4">
+                    <FamilyDrawerSecondaryButton
+                        onClick={() => setView("default")}
+                        className="bg-gray-200 text-black/50 hover:bg-gray-400 text-black"
+                    >
+                        Back
+                    </FamilyDrawerSecondaryButton>
+                    <FamilyDrawerSecondaryButton
+                        onClick={handleVerify}
+                        className="bg-black text-white hover:bg-black/90"
+                    >
+                        Verify
+                    </FamilyDrawerSecondaryButton>
+                </div>
             </div>
         </div>
     )
 }
 
-const PhoneLoginViews: ViewsRegistry = {
-    default: PhoneNumberInputView,
+const customViews: ViewsRegistry = {
+    default: CustomDefaultView,
     otp: OTPView
 }
 
-import { Drawer } from "vaul"
 
-// NOTE: This drawer is completely controlled by the useAuthStore
-export function PhoneLoginDrawer() {
-    const { isOpen, closeAuth, step } = useAuthStore()
 
-    // Determine default view based on store state if needed, though 'default' is usually safer start logic
-    // We can rely on 'setView' inside the components to navigate.
 
+
+const LoginButton = () => {
     return (
-        <FamilyDrawerRoot
-            views={PhoneLoginViews}
-            defaultView={step === 'OTP' ? 'otp' : 'default'}
-            open={isOpen}
-            onOpenChange={(open) => {
-                if (!open) closeAuth()
-            }}
-        >
+        <FamilyDrawerRoot views={customViews}>
+            <FamilyDrawerTrigger className="!relative !top-auto !left-auto !-translate-y-0 !-translate-x-0 block h-[44px] !border-none !bg-transparent !font-bold px-4 py-2 font-medium text-foreground transition-colors hover:bg-accent  focus-visible:shadow-focus-ring-button md:font-medium cursor-pointer text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors relative">
+                LOGIN
+            </FamilyDrawerTrigger>
             <FamilyDrawerPortal>
                 <FamilyDrawerOverlay />
                 <FamilyDrawerContent>
@@ -191,5 +188,8 @@ export function PhoneLoginDrawer() {
                 </FamilyDrawerContent>
             </FamilyDrawerPortal>
         </FamilyDrawerRoot>
-    )
+    );
 }
+
+
+export { LoginButton };

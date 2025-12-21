@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useCartStore } from "@/hooks/useCartStore";
 import { useEffect, useState } from "react";
-import { PhoneLoginDrawer } from "./auth/PhoneLoginDrawer";
+import { LoginButton } from "@/components/auth/PhoneLoginDrawer";
+
 
 export default function Header() {
     const items = useCartStore((state) => state.items);
-    const { user, openAuth } = useAuthStore();
+    const { user } = useAuthStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export default function Header() {
                     <Link href="/about" className="hidden md:block text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors">
                         About
                     </Link>
-                    <PhoneLoginDrawer />
+
 
                     {/* Login / Profile Button */}
                     {mounted && (
@@ -41,12 +42,14 @@ export default function Header() {
                                 <span className="md:hidden">👤</span>
                             </Link>
                         ) : (
-                            <button
-                                onClick={openAuth}
-                                className="text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
-                            >
-                                Login
-                            </button>
+
+                            <LoginButton />
+                            // <button
+                            //     onClick={() => setView("login")}
+                            //     className="text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors relative"
+                            // >
+                            //     Login
+                            // </FamilyDrawerButton>
                         )
                     )}
 
