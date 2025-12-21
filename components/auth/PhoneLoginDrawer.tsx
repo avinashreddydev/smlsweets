@@ -102,15 +102,49 @@ function CustomDefaultView() {
     )
 }
 
+const SuccessView = () => {
+    const { login, phoneNumber } = useAuthStore()
+
+    const handleClose = () => {
+        login(phoneNumber)
+    }
+
+    return (
+        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+            <div className="mb-6 rounded-full bg-green-100 p-3">
+                <CheckCircle className="h-12 w-12 text-green-600" />
+            </div>
+            <h3 className="mb-2 text-2xl font-bold">Login Successful!</h3>
+            <p className="mb-8 text-muted-foreground">
+                You have successfully logged in with +91 {phoneNumber}
+            </p>
+            <FamilyDrawerSecondaryButton
+                onClick={handleClose}
+                className="w-full bg-black text-white hover:bg-black/90"
+            >
+                Continue
+            </FamilyDrawerSecondaryButton>
+        </div>
+    )
+}
+
 function OTPView() {
     const { setView } = useFamilyDrawer()
     const { login, phoneNumber } = useAuthStore()
     const otpId = useId()
 
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        // slight delay to ensure animation has started/layout is ready
+        const timer = setTimeout(() => {
+            inputRef.current?.focus()
+        }, 50)
+        return () => clearTimeout(timer)
+    }, [])
+
     const handleVerify = () => {
-        login(phoneNumber)
-        // Additional cleanup managed by store, but we can animate out here
-        // The store's 'isOpen' will false, which closes the drawer
+        setView("success")
     }
 
     return (
@@ -128,7 +162,9 @@ function OTPView() {
                         </label>
                         <div className="mt-2">
                             <input
+                                ref={inputRef}
                                 id={otpId}
+                                autoFocus
                                 type="text"
                                 inputMode="numeric"
                                 placeholder="1234"
@@ -159,7 +195,8 @@ function OTPView() {
 
 const customViews: ViewsRegistry = {
     default: CustomDefaultView,
-    otp: OTPView
+    otp: OTPView,
+    success: SuccessView
 }
 
 
