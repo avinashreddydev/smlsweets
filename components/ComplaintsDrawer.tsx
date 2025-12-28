@@ -31,6 +31,8 @@ export default function ComplaintsDrawer() {
     const { isComplaintOpen, closeComplaint, activeComplaintId } = useComplaintStore();
     const { user } = useAuthStore();
 
+    const { width, height } = useWindowSize();
+
     const [chatMessages, setChatMessages] = useState(messages);
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
@@ -40,6 +42,7 @@ export default function ComplaintsDrawer() {
 
     // Handle mobile keyboard height adjustment
     const drawerRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll helper
@@ -59,6 +62,11 @@ export default function ComplaintsDrawer() {
         setInputValue("");
         scrollToBottom();
 
+        // Keep focus
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 10);
+
         // Simulate AI response
         setIsTyping(true);
         setTimeout(() => {
@@ -73,7 +81,13 @@ export default function ComplaintsDrawer() {
     };
 
     useEffect(() => {
-        if (isComplaintOpen) scrollToBottom();
+        if (isComplaintOpen) {
+            scrollToBottom();
+            // Focus on open
+            setTimeout(() => {
+                inputRef.current?.focus();
+            }, 300);
+        }
     }, [isComplaintOpen]);
 
     useEffect(() => {
@@ -191,6 +205,7 @@ export default function ComplaintsDrawer() {
                             <div className="flex items-center gap-3">
                                 <input
                                     type="text"
+                                    ref={inputRef}
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
@@ -198,6 +213,8 @@ export default function ComplaintsDrawer() {
                                     className="flex-1 px-4 py-3 border border-black/10 rounded-2xl focus:outline-none focus:ring-1 focus:ring-black text-base bg-white placeholder:text-gray-400 font-medium"
                                 />
                                 <button
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onTouchStart={(e) => e.preventDefault()}
                                     onClick={handleSend}
                                     disabled={!inputValue.trim() || isTyping}
                                     className="w-12 h-12 flex-shrink-0 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-all shadow-lg disabled:opacity-50"
