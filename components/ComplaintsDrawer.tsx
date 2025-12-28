@@ -31,6 +31,10 @@ export default function ComplaintsDrawer() {
     const { isComplaintOpen, closeComplaint, activeComplaintId } = useComplaintStore();
     const { user } = useAuthStore();
 
+    const [chatMessages, setChatMessages] = useState(messages);
+    const [inputValue, setInputValue] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
+
     // Use robust scroll prevention (handles iOS keyboard quirks)
     usePreventScroll({ isDisabled: !isComplaintOpen });
 
@@ -45,6 +49,27 @@ export default function ComplaintsDrawer() {
                 messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
             }, 100);
         }
+    };
+
+    const handleSend = async () => {
+        if (!inputValue.trim()) return;
+
+        const userMsg = { role: "user", content: inputValue.trim() };
+        setChatMessages(prev => [...prev, userMsg]);
+        setInputValue("");
+        scrollToBottom();
+
+        // Simulate AI response
+        setIsTyping(true);
+        setTimeout(() => {
+            const aiMsg = {
+                role: "ai",
+                content: "i am a dummy assistant, not yet production, will talk to you soon"
+            };
+            setChatMessages(prev => [...prev, aiMsg]);
+            setIsTyping(false);
+            scrollToBottom();
+        }, 1500);
     };
 
     useEffect(() => {
@@ -124,7 +149,7 @@ export default function ComplaintsDrawer() {
                         </div>
 
                         <div className="flex-1 overflow-y-auto px-6 space-y-4 py-6">
-                            {messages.map((msg, index) => {
+                            {chatMessages.map((msg, index) => {
                                 const isAi = msg.role === "ai";
                                 return (
                                     <div
@@ -148,6 +173,17 @@ export default function ComplaintsDrawer() {
                                     </div>
                                 );
                             })}
+                            {isTyping && (
+                                <div className="flex flex-col items-start">
+                                    <div className="bg-white border border-black/5 text-black rounded-2xl rounded-tl-none shadow-sm p-4">
+                                        <div className="flex gap-1.5">
+                                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                             <div ref={messagesEndRef} />
                         </div>
 
@@ -155,12 +191,16 @@ export default function ComplaintsDrawer() {
                             <div className="flex items-center gap-3">
                                 <input
                                     type="text"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
                                     placeholder="Type your message..."
                                     className="flex-1 px-4 py-3 border border-black/10 rounded-2xl focus:outline-none focus:ring-1 focus:ring-black text-base bg-white placeholder:text-gray-400 font-medium"
                                 />
                                 <button
-                                    onClick={() => { /* handle send */ }}
-                                    className="w-12 h-12 flex-shrink-0 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-all shadow-lg"
+                                    onClick={handleSend}
+                                    disabled={!inputValue.trim() || isTyping}
+                                    className="w-12 h-12 flex-shrink-0 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-all shadow-lg disabled:opacity-50"
                                 >
                                     <Send className="w-5 h-5" />
                                 </button>
