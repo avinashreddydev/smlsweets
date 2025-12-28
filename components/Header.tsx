@@ -5,12 +5,14 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { useCartStore } from "@/hooks/useCartStore";
 import { useEffect, useState } from "react";
 import { LoginButton } from "@/components/auth/PhoneLoginDrawer";
+import { useComplaintStore } from "@/hooks/useComplaintStore";
 
 
 export default function Header() {
     const items = useCartStore((state) => state.items);
     const { user } = useAuthStore();
     const [mounted, setMounted] = useState(false);
+    const { isComplaintOpen, } = useComplaintStore();
 
     useEffect(() => {
         setMounted(true);
@@ -23,7 +25,7 @@ export default function Header() {
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
                 <Link
                     href="/"
-                    className="text-2xl font-bold tracking-tighter uppercase text-black hover:opacity-50 transition-opacity"
+                    className="text-lg lg:text-2xl font-bold tracking-tighter uppercase text-black hover:opacity-50 transition-opacity"
                 >
                     SRI MAHALAKSHMI SWEETS
                 </Link>
@@ -35,23 +37,41 @@ export default function Header() {
 
 
                     {/* Login / Profile Button */}
-                    {mounted && (
-                        user ? (
-                            <Link href="/profile" className="text-sm font-bold uppercase tracking-widest text-black hover:text-gray-500 transition-colors flex items-center gap-2">
-                                <span className="hidden md:inline">Profile</span>
-                                <span className="md:hidden">👤</span>
-                            </Link>
-                        ) : (
+                    {user ? (
+                        <Link href="/profile" className="text-sm font-bold uppercase tracking-widest text-black hover:text-gray-500 transition-colors flex items-center gap-2">
+                            <span className="hidden md:inline">Profile</span>
+                            <span className="md:hidden">👤</span>
+                        </Link>
+                    ) : (
 
-                            <LoginButton />
-                            // <button
-                            //     onClick={() => setView("login")}
-                            //     className="text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors relative"
-                            // >
-                            //     Login
-                            // </FamilyDrawerButton>
-                        )
-                    )}
+                        <LoginButton />
+                        // <button
+                        //     onClick={() => setView("login")}
+                        //     className="text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors relative"
+                        // >
+                        //     Login
+                        // </FamilyDrawerButton>
+                    )
+                    }
+
+
+
+
+
+                    {/* Complaint Button */}
+                    {/* <button
+                        onClick={() => useComplaintStore.getState().openComplaint()}
+                        className="relative group p-2 hover:opacity-50 transition-opacity"
+                        aria-label="Support"
+                    >
+                        <div className="block text-black">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-headset">
+                                <path d="M3 11v3a8 8 0 0 0 16 0v-3" />
+                                <path d="M9 13.5a2.5 2.5 0 1 0-5 0V11a2.5 2.5 0 0 0 2.5-2.5h0A2.5 2.5 0 0 0 9 8.5v5Z" />
+                                <path d="M22 11v-2.5a2.5 2.5 0 0 0-2.5-2.5h0A2.5 2.5 0 0 0 17 8.5v5a2.5 2.5 0 1 0 5 0Z" />
+                            </svg>
+                        </div>
+                    </button> */}
 
                     <button
                         onClick={() => useCartStore.getState().openCart()}

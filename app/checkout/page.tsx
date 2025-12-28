@@ -28,29 +28,66 @@ export default function CheckoutPage() {
     const [success, setSuccess] = useState(false);
 
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
+        name: "Avinash Reddy",
+        email: "avinashreddy@idio.in",
         address: {
-            line1: "",
-            city: "",
-            state: "",
-            postal_code: "",
+            line1: "123 Main St",
+            city: "Anytown",
+            state: "CA",
+            postal_code: "12345",
             country: "US", // Default
         },
+        phone: "1234567890",
     });
 
-    if (items.length === 0 && !success) {
-        if (typeof window !== "undefined") {
-            router.push("/cart");
-        }
-        return null;
-    }
+    // if (items.length === 0 && !success) {
+    //     if (typeof window !== "undefined") {
+    //         router.push("/cart");
+    //     }
+    //     return null;
+    // }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
         setError(null);
-        console.log(formData);
+        console.log("Form Data:", formData);
+
+        try {
+            const response = await fetch("/api/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    amount: cartTotal,
+                    customerName: formData.name,
+                    customerEmail: formData.email,
+                    customerPhone: formData.phone,
+                    items: items,
+                }),
+            });
+
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Something went wrong initiating payment");
+            }
+
+            if (data.redirectUrl) {
+                clearCart();
+                // Redirect to PhonePe
+                window.location.href = data.redirectUrl;
+            } else {
+                throw new Error("No redirect URL received");
+            }
+
+        } catch (err: any) {
+            console.error("Payment Error:", err);
+            setError(err.message || "Failed to start payment. Please try again.");
+            setIsSubmitting(false);
+        }
     };
 
     if (success) {

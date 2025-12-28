@@ -5,6 +5,7 @@ import Providers from "./providers";
 import Header from "@/components/Header";
 import CookieBanner from "@/components/CookieBanner";
 import CartDrawer from "@/components/CartDrawer";
+import ComplaintsDrawer from "@/components/ComplaintsDrawer";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
@@ -14,6 +15,15 @@ export const metadata: Metadata = {
     template: "%s | Sri Mahalakshmi Sweets",
   },
   description: "Authentic, handcrafted Indian sweets.",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // Also good for keyboard handling
+  interactiveWidget: 'resizes-content',
 };
 
 export default function RootLayout({
@@ -33,6 +43,7 @@ export default function RootLayout({
           </main>
           <CookieBanner />
           <CartDrawer />
+          <ComplaintsDrawer />
         </Providers>
       </body>
     </html>
