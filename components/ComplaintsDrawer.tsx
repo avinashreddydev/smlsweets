@@ -31,8 +31,6 @@ export default function ComplaintsDrawer() {
     const { isComplaintOpen, closeComplaint, activeComplaintId } = useComplaintStore();
     const { user } = useAuthStore();
 
-    const { width, height } = useWindowSize();
-
     const [chatMessages, setChatMessages] = useState(messages);
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
@@ -42,7 +40,7 @@ export default function ComplaintsDrawer() {
 
     // Handle mobile keyboard height adjustment
     const drawerRef = useRef<HTMLDivElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll helper
@@ -53,6 +51,21 @@ export default function ComplaintsDrawer() {
             }, 100);
         }
     };
+
+
+
+    const adjustHeight = () => {
+        const textarea = inputRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto'; // Reset to auto to get correct scrollHeight
+            const newHeight = Math.min(textarea.scrollHeight, 112); // Approx 5 rows (20px line-height * 5 + padding)
+            textarea.style.height = `${newHeight}px`;
+        }
+    };
+
+    useEffect(() => {
+        adjustHeight();
+    }, [inputValue]);
 
     const handleSend = async () => {
         if (!inputValue.trim()) return;
@@ -81,13 +94,7 @@ export default function ComplaintsDrawer() {
     };
 
     useEffect(() => {
-        if (isComplaintOpen) {
-            scrollToBottom();
-            // Focus on open
-            setTimeout(() => {
-                inputRef.current?.focus();
-            }, 300);
-        }
+        if (isComplaintOpen) scrollToBottom();
     }, [isComplaintOpen]);
 
     useEffect(() => {
@@ -202,15 +209,20 @@ export default function ComplaintsDrawer() {
                         </div>
 
                         <div className="p-6 border-t border-black/10 bg-white/80 backdrop-blur-md sticky bottom-0 z-10 w-full">
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="text"
+                            <div className="flex items-end gap-3">
+                                <textarea
                                     ref={inputRef}
+                                    rows={1}
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleSend();
+                                        }
+                                    }}
                                     placeholder="Type your message..."
-                                    className="flex-1 px-4 py-3 border border-black/10 rounded-2xl focus:outline-none focus:ring-1 focus:ring-black text-base bg-white placeholder:text-gray-400 font-medium"
+                                    className="flex-1 px-4 py-3 border border-black/10 rounded-2xl focus:outline-none focus:ring-1 focus:ring-black text-base bg-white placeholder:text-gray-400 font-medium resize-none min-h-[50px] max-h-[112px] overflow-y-auto"
                                 />
                                 <button
                                     onMouseDown={(e) => e.preventDefault()}

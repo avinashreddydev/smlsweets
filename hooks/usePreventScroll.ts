@@ -30,9 +30,8 @@ export function isScrollable(node: Element): boolean {
 }
 
 export function getScrollParent(node: Element): Element {
-    if (isScrollable(node)) {
-        node = node.parentElement as HTMLElement;
-    }
+    // If the node itself is scrollable, use it.
+    // The previous logic skipped valid scrollable targets (like textarea).
 
     while (node && !isScrollable(node)) {
         node = node.parentElement as HTMLElement;
