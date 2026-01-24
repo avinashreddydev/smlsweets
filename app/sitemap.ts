@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getProducts } from '@/lib/storekit';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = 'https://smlsweets.com'; // Replace with actual domain
+    const baseUrl = 'https://smlsweets.servji.com'; // Replace with actual domain
 
     // Static routes
     const routes = [
